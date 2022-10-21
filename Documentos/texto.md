@@ -1,0 +1,1 @@
+Estamos leyendo el texto https://www.youtube.com/watch?v=EOO6Ze9_lDY
