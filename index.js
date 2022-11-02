@@ -1,44 +1,32 @@
-const { convertirRuta, recorrerDirectorios, obtenerLinks, verificarLinks } = require('./funciones')
+const { convertirRuta, recorrerDirectorios, obtenerLinks } = require('./obtenerLinks');
+const { imprimir } = require('./validarLinks');
 const fs = require('fs');
-const { url } = require('inspector');
+const chalk = require('chalk');
 
-// Recibir y guardar argumento desde posicion 3 para eso es el slice
-const args = process.argv.slice(2);
+const mdLinks = (ruta, opciones = {}) => {
 
-const mdLinks = (ruta, opciones) => {
-
-  const rutaAbsoluta = convertirRuta(ruta[0]);
-  let archivosMD;
+  const rutaAbsoluta = convertirRuta(ruta);
 
   try {
     const stat = fs.statSync(rutaAbsoluta);
 
     if (stat.isFile()) {
-      archivosMD = [];
-      archivosMD.push(rutaAbsoluta);
-      obtenerLinks(archivosMD)
-        .then((enlaces) => {
-          verificarLinks(enlaces)
-        })
 
-    } else
+      obtenerLinks(rutaAbsoluta).then((enlaces) => imprimir(enlaces, opciones));
 
-      if (stat.isDirectory()) {
+    } else if (stat.isDirectory()) {
 
-        recorrerDirectorios(rutaAbsoluta, (error, data) => {
-          if (error) {
-            throw error;
-          }
-          archivosMD = data;
-          obtenerLinks(archivosMD)
-            .then((enlaces) => {
-             verificarLinks(enlaces)
-            })
-        });
-      }
+      recorrerDirectorios(rutaAbsoluta, (error, archivosMD) => {
+
+        if (error) throw error;
+
+        obtenerLinks(archivosMD).then((enlaces) => imprimir(enlaces, opciones));
+
+      });
+    }
   } catch (error) {
-    console.log(`Directorio o archivo NO existe ${error.message}`)
-  }
-}
+    console.log(`${chalk.bold.red('Directorio o archivo NO existe')} ${chalk.inverse.gray(` ${rutaAbsoluta} `)} ${error.message}`);
+  };
+};
 
-mdLinks(args);
+module.exports = { mdLinks };
