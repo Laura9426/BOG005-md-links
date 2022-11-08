@@ -35,7 +35,7 @@ npm i md-links-gonzalezlaura
 ```
 
 ```sh
-const {mdLinks} = require('md-links-lauragonzalez')
+const {mdLinks} = require('md-links-gonzalezlaura')
 ```
 
 ## 4. Líneas de comandos
