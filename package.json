@@ -1,6 +1,6 @@
 {
   "name": "md-links-lauragonzalez",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "description": "Libreria para verificar validacion de los links dentro de un archivo Markdown",
   "main": "index.js",
   "directories": {
