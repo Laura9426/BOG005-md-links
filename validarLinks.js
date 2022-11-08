@@ -1,22 +1,6 @@
 const axios = require('axios');
 const chalk = require('chalk');
 
-const verificarLinks = (enlaces) => {
-    return new Promise((resolve, reject) => {
-        let promesas = [];
-        enlaces.forEach(data => {
-            promesas.push(statusLink(data.url));
-        });
-        Promise.all(promesas).then(resultado => {
-            const status = resultado.flat();
-            const nuevosEnlaces = enlaces.map((enlace, i) => {
-                return Object.assign(enlace, status[i]);
-            });
-            resolve(nuevosEnlaces);
-        });
-    });
-};
-
 const statusLink = (link) => {
     return new Promise((resolve, reject) => {
         axios.get(link)
@@ -35,7 +19,25 @@ const statusLink = (link) => {
     })
 }
 
+const verificarLinks = (enlaces) => {
+   
+    return new Promise((resolve, reject) => {
+        let promesas = [];
+        enlaces.forEach(data => {
+            promesas.push(statusLink(data.url));
+        });
+        Promise.all(promesas).then(resultado => {
+            const status = resultado.flat();
+            const nuevosEnlaces = enlaces.map((enlace, i) => {
+                return Object.assign(enlace, status[i]);
+            });
+            resolve(nuevosEnlaces);
+        });
+    });
+};
+
 const statsLink = (enlaces) => {
+    
     return new Promise((resolve, reject) => {
         let arrayLinks = [];
 
@@ -80,6 +82,7 @@ const imprimir = (enlaces, opciones) => {
     if (IsStats & !IsValidate) statsLink(enlaces).then((stats) => console.table(stats));
     
     if (IsValidate & IsStats) statsValidate(enlaces).then((stats) => console.table(stats));
+
 }
 
-module.exports = { imprimir };
+module.exports = { imprimir, statsValidate, statsLink, verificarLinks, statusLink };

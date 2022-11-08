@@ -1,32 +1,38 @@
 const { convertirRuta, recorrerDirectorios, obtenerLinks } = require('./obtenerLinks');
-const { imprimir } = require('./validarLinks');
 const fs = require('fs');
 const chalk = require('chalk');
 
 const mdLinks = (ruta, opciones = {}) => {
+  return new Promise((resolve, reject) => {
 
-  const rutaAbsoluta = convertirRuta(ruta);
+    const rutaAbsoluta = convertirRuta(ruta);
 
-  try {
-    const stat = fs.statSync(rutaAbsoluta);
+    try {
+      const stat = fs.statSync(rutaAbsoluta);
 
-    if (stat.isFile()) {
+      if (stat.isFile()) {
 
-      obtenerLinks(rutaAbsoluta).then((enlaces) => imprimir(enlaces, opciones));
+        obtenerLinks(rutaAbsoluta).then((enlaces) => {
 
-    } else if (stat.isDirectory()) {
+          resolve(enlaces)
+        });
 
-      recorrerDirectorios(rutaAbsoluta, (error, archivosMD) => {
+      } else if (stat.isDirectory()) {
 
-        if (error) throw error;
+        recorrerDirectorios(rutaAbsoluta, (error, archivosMD) => {
 
-        obtenerLinks(archivosMD).then((enlaces) => imprimir(enlaces, opciones));
+          if (error) throw error;
 
-      });
-    }
-  } catch (error) {
-    console.log(`${chalk.bold.red('Directorio o archivo NO existe')} ${chalk.inverse.gray(` ${rutaAbsoluta} `)} ${error.message}`);
-  };
+          obtenerLinks(archivosMD).then((enlaces) => {
+            resolve(enlaces)
+          });
+
+        });
+      }
+    } catch (error) {
+      console.log(`${chalk.bold.red('Directorio o archivo NO existe')} ${chalk.inverse.gray(` ${rutaAbsoluta} `)} ${error.message}`);
+    };
+  });
 };
 
 module.exports = { mdLinks };

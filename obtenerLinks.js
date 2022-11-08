@@ -87,4 +87,4 @@ const leerArchivo = (ruta) => {
 };
 
 
-module.exports = { convertirRuta, recorrerDirectorios, obtenerLinks };
+module.exports = { convertirRuta, recorrerDirectorios, obtenerLinks, leerArchivo };
