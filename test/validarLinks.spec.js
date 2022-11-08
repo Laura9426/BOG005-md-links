@@ -1,4 +1,6 @@
 const validarLinks = require('../validarLinks')
+const { mocksStatusLink, mocksVerificarLinks, mocksStatsLink, mocksStatsValidate } = require('../mocks')
+
 
 describe('statusLink', () => {
 
@@ -6,29 +8,17 @@ describe('statusLink', () => {
         expect(typeof validarLinks.statusLink).toBe('function');
     });
 
-    it('statusLink retorna datos esperados', () => {
-        const link = 'https://es.wikipedia.org/wiki/Markdown';
-        const respuesta = {
-            status: 200,
-            ok: 'OK',
-        }
-        validarLinks.statusLink(link).then((data) => {
-            expect(data).toMatchObject(respuesta);
+    it('statusLink retorna HTTP OK', () => {
+        validarLinks.statusLink(mocksStatusLink.ok.link).then((data) => {
+            expect(data).toMatchObject(mocksStatusLink.ok.respuesta);
         })
     });
 
-    it('statusLink retorna datos esperados', () => {
-        const link = 'https://www.tbe.com/watch?v=EOO6Ze9_lDY';
-        const respuesta = {
-            status: null,
-            ok: '❌',
-        }
-        validarLinks.statusLink(link).then((data) => {
-            expect(data).toMatchObject(respuesta);
+    it('statusLink retorna HTTP fail', () => {
+        validarLinks.statusLink(mocksStatusLink.fail.link).then((data) => {
+            expect(data).toMatchObject(mocksStatusLink.fail.respuesta);
         })
     });
-
-
 });
 
 describe('verificarLinks', () => {
@@ -37,44 +27,13 @@ describe('verificarLinks', () => {
         expect(typeof validarLinks.verificarLinks).toBe('function');
     });
 
-    it('verificarLinks retorna datos esperados', () => {
-       jest.spyOn(validarLinks, 'statusLink').mockReturnValue({});
-    // validarLinks.statusLink
+    it('verificarLinks crea objeto con peticion HTTP', () => {
+        jest.spyOn(validarLinks, 'statusLink').mockReturnValue({});
 
-        const enlaces = [
-            {
-                url: 'https://github.com/Laura9426/BOG005-social-network',
-                texto: 'google',
-                carpeta: 'C:\\Users\\lmgv9\\BOG005-md-links\\Documentos\\texto.md'
-            },
-            {
-                url: 'https://nodejs.org/',
-                texto: 'Node.js',
-                carpeta: 'C:\\Users\\lmgv9\\BOG005-md-links\\Documentos\\carpeta-uno\\archivo.md'
-            }];
-
-        const respuesta = [
-            {
-                url: 'https://github.com/Laura9426/BOG005-social-network',
-                texto: 'google',
-                carpeta: 'C:\\Users\\lmgv9\\BOG005-md-links\\Documentos\\texto.md',
-                status: 200,
-                ok: 'OK'
-            },
-            {
-                url: 'https://nodejs.org/',
-                texto: 'Node.js',
-                carpeta: 'C:\\Users\\lmgv9\\BOG005-md-links\\Documentos\\carpeta-uno\\archivo.md',
-                status: 200,
-                ok: 'OK'
-            }
-        ]
-        validarLinks.verificarLinks(enlaces).then((data) => {
-            expect(data).toMatchObject(respuesta);
+        validarLinks.verificarLinks(mocksVerificarLinks.enlaces).then((data) => {
+            expect(data).toMatchObject(mocksVerificarLinks.respuesta);
         })
-
     });
-
 });
 
 describe('statsLink', () => {
@@ -83,25 +42,10 @@ describe('statsLink', () => {
         expect(typeof validarLinks.statsLink).toBe('function');
     });
 
-    it('statsLink retorna datos esperados', () => {
-
-        const enlaces = [
-            {
-                url: 'https://github.com/Laura9426/BOG005-social-network',
-                texto: 'google',
-                carpeta: 'C:\\Users\\lmgv9\\BOG005-md-links\\Documentos\\texto.md'
-            },
-            {
-                url: 'https://nodejs.org/',
-                texto: 'Node.js',
-                carpeta: 'C:\\Users\\lmgv9\\BOG005-md-links\\Documentos\\carpeta-uno\\archivo.md'
-            }];
-
-        const respuesta = { Total: 2, Unique: 2 }
-        validarLinks.statsLink(enlaces).then((data)=>{
-            expect(data).toMatchObject(respuesta);
+    it('statsLink retorna objeto con estadisticas', () => {
+        validarLinks.statsLink(mocksStatsLink.enlaces).then((data) => {
+            expect(data).toMatchObject(mocksStatsLink.respuesta);
         })
-        
     });
 });
 
@@ -111,22 +55,9 @@ describe('statsValidate', () => {
         expect(typeof validarLinks.statsValidate).toBe('function');
     });
 
-    it('statsValidate sea una funcion', () => {
-
-        const enlaces = [
-            {
-                url: 'https://github.com/Laura9426/BOG005-social-network',
-                texto: 'google',
-                carpeta: 'C:\\Users\\lmgv9\\BOG005-md-links\\Documentos\\texto.md'
-            },
-            {
-                url: 'https://nodejs.org/',
-                texto: 'Node.js',
-                carpeta: 'C:\\Users\\lmgv9\\BOG005-md-links\\Documentos\\carpeta-uno\\archivo.md'
-            }];
-        const respuesta = { Total: 2, Unique: 2, Broken: 0 }
-        validarLinks.statsValidate(enlaces).then((data)=>{
-            expect(data).toMatchObject(respuesta);
+    it('statsValidate retorna objeto con estadisticas y validacion', () => {
+        validarLinks.statsValidate(mocksStatsValidate.enlaces).then((data) => {
+            expect(data).toMatchObject(mocksStatsValidate.respuesta);
         })
     });
 });
