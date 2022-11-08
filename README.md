@@ -31,7 +31,7 @@ la información que se quiere compartir.
 ## 3. Guía de instalación
 
 ```sh
-npm install md-links-lauragonzalez
+npm i md-links-gonzalezlaura
 ```
 
 ```sh
